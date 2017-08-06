@@ -24,7 +24,7 @@ $(document).ready(function() {
         var table = $('<table />');
         var tbody = $('<tbody />');
         var thead = $('<thead />');
-        var theadRow = $('<tr />').append('<th>Title</th>' , '<th>Created At</th>', '<th>Upvotes</th>', '<th>Comments</th>', '<th>Author</th>');
+        var theadRow = $('<tr />').append('<th>Title</th>' , '<th>Created At</th>', '<th>Upvotes</th>', '<th>Comments</th>', '<th>Author</th>, <th>Purpose</th>');
 
         $(issues).each(function(index, issue) {
             var row = $('<tr />');
@@ -38,23 +38,21 @@ $(document).ready(function() {
             var upVotes = $('<td />').text(issue.reactions["+1"]);
             var comments = $('<td />').text(issue.comments);
             var purposeInfo = purpose2[0].replace(/#/g,'').replace(/:/g,'');
+            purposeInfo = ( purposeInfo.length > 500 ) ? purposeInfo.substring(0, 500).concat("... ") : purposeInfo
             var description = $('<td colspan="4" />').html(purposeInfo);
 
-            row.append(title, startDate, upVotes, comments, issue.user.login);
             row.addClass('clickable');
             description.append(moreInfo);
             descriptionRow.append(description);
-            tbody.append(row, descriptionRow);
+            row.append(title, startDate, upVotes, comments, issue.user.login, description);
+            tbody.append(row);
         });
 
         thead.append(theadRow);
         table.addClass('table table-hover');
         table.append(thead, tbody);
         $('#app').append(table);
-
-        $('table tr.clickable').on('click', function(event){
-            $(this).next().toggleClass('hidden');
-        });
+        $('.table').tablesorter({dateFormat: 'pt'});
 
         $('#search').on('keyup', function(event){
             var input = $(this).val().toLowerCase();
